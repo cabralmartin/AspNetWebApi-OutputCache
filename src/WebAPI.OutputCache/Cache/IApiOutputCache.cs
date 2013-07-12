@@ -9,6 +9,7 @@ namespace WebAPI.OutputCache.Cache
         T Get<T>(string key) where T : class;
         object Get(string key);
         void Remove(string key);
+        void RemoveItemsWithKeyStartingWith(string key);
         bool Contains(string key);
         void Add(string key, object o, DateTimeOffset expiration, string dependsOnKey = null);
     }

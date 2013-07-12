@@ -5,6 +5,8 @@ using System.Runtime.Caching;
 
 namespace WebAPI.OutputCache.Cache
 {
+    using System.Linq;
+
     public class MemoryCacheDefault : IApiOutputCache
     {
         private static readonly MemoryCache Cache = MemoryCache.Default;
@@ -14,6 +16,15 @@ namespace WebAPI.OutputCache.Cache
             lock (Cache)
             {
                 Cache.Remove(key);
+            }
+        }
+
+        public void RemoveItemsWithKeyStartingWith(string key)
+        {
+            lock (Cache)
+            {
+                var itemsToRemove = Cache.Where(c => c.Key.StartsWith(key)).Select(k => k.Key);
+                foreach (var itemToRemove in itemsToRemove) Cache.Remove(itemToRemove);
             }
         }
 
