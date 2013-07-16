@@ -12,5 +12,6 @@ namespace WebAPI.OutputCache.Cache
         void RemoveItemsWithKeyStartingWith(string key);
         bool Contains(string key);
         void Add(string key, object o, DateTimeOffset expiration, string dependsOnKey = null);
+        void Clear();
     }
 }

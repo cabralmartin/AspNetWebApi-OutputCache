@@ -5,11 +5,12 @@ using System.Runtime.Caching;
 
 namespace WebAPI.OutputCache.Cache
 {
+    using System.Collections.Generic;
     using System.Linq;
 
     public class MemoryCacheDefault : IApiOutputCache
     {
-        private static readonly MemoryCache Cache = MemoryCache.Default;
+        private static MemoryCache Cache = MemoryCache.Default;
 
         public void RemoveStartsWith(string key)
         {
@@ -61,7 +62,6 @@ namespace WebAPI.OutputCache.Cache
 
             if (!string.IsNullOrWhiteSpace(dependsOnKey))
             {
-               
                 cachePolicy.ChangeMonitors.Add(
                     Cache.CreateCacheEntryChangeMonitor(new[] {dependsOnKey})
                 );
@@ -69,6 +69,19 @@ namespace WebAPI.OutputCache.Cache
             lock (Cache)
             {
                 Cache.Add(key, o, cachePolicy);
+            }
+        }
+
+        public void Clear()
+        {
+            lock (Cache)
+            {
+                var cacheItems = (from n in Cache select n).ToList();
+
+                foreach (var item in cacheItems)
+                {
+                    Cache.Remove(item.Key);
+                }
             }
         }
     }
